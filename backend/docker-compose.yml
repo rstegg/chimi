@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: chimi_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: chimiuser
+      POSTGRES_PASSWORD: chimi123
+      POSTGRES_DB: chimidb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chimi_backend
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://chimiuser:chimi123@postgres:5432/chimidb
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
