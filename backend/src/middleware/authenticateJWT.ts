@@ -7,16 +7,18 @@ export const authenticateJWT = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   const token = req.headers.authorization?.split(' ')[1]; // Extract Bearer token
 
   if (!token) {
-    return res.status(401).json({ msg: 'Unauthorized' });
+    res.status(401).json({ msg: 'Unauthorized' }); // Properly return
+    return;
   }
 
   jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
     if (err) {
-      return res.status(403).json({ msg: 'Forbidden', error: err.message });
+      res.status(403).json({ msg: 'Forbidden', error: err.message }); // Properly return
+      return;
     }
 
     if (
@@ -33,10 +35,12 @@ export const authenticateJWT = (
       };
 
       // Attach the user object to the request
-      req.user = { id, email, username };
-      next();
+      req.user = { id, email, username }; // Type assertion for user property
+      next(); // Ensure next() is called in this branch
+      return;
     } else {
-      return res.status(403).json({ msg: 'Invalid token payload' });
+      res.status(403).json({ msg: 'Invalid token payload' }); // Properly return
+      return;
     }
   });
 };

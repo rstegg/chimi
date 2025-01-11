@@ -1,20 +1,24 @@
-# Base image
-FROM node:16
+FROM node:18
 
-# Set working directory
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash
+ENV PATH="/root/.bun/bin:$PATH"
+
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files first for caching
 COPY package.json yarn.lock ./
-
-# Install dependencies
 RUN yarn install
 
-# Copy the rest of the app's source code
+# Globally install nodemon
+RUN npm install -g nodemon
+
+# Copy the rest of the application code
 COPY . .
 
-# Build the app
-RUN yarn build
+# Generate Prisma client
+RUN npx prisma generate
 
-# Start the app
-CMD ["yarn", "start"]
+# Apply migrations and start the development server with nodemon
+CMD ["sh", "-c", "npx prisma migrate deploy && nodemon --watch src --exec bun run src/index.ts"]

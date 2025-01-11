@@ -8,11 +8,12 @@ export const getMealPlans = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
     const userId = req.user?.id; // Assuming `req.user` is populated via authentication middleware
     if (!userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      res.status(401).json({ msg: 'Unauthorized' });
+      return;
     }
 
     const mealPlans = await prisma.mealPlan.findMany({
@@ -20,7 +21,9 @@ export const getMealPlans = async (
     });
 
     res.json(mealPlans);
+    return;
   } catch (error) {
     next(error);
+    return;
   }
 };

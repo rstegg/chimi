@@ -7,11 +7,12 @@ export const deleteMealPlan = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      res.status(401).json({ msg: 'Unauthorized' });
+      return;
     }
 
     const { id } = req.params;
@@ -21,13 +22,16 @@ export const deleteMealPlan = async (
     });
 
     if (!deletedMealPlan.count) {
-      return res
+      res
         .status(404)
         .json({ msg: 'Meal plan not found or unauthorized' });
+      return;
     }
 
     res.json({ msg: 'Meal plan deleted' });
+    return;
   } catch (error) {
     next(error);
+    return;
   }
 };

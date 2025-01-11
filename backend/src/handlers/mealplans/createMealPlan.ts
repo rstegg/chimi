@@ -7,11 +7,12 @@ export const createMealPlan = (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): void => {
   try {
     const userId = req.user?.id;
     if (!userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
+      res.status(401).json({ msg: 'Unauthorized' });
+      return;
     }
 
     const { name, items } = req.body; // `items` can be a JSON array or similar, based on your schema
@@ -26,7 +27,9 @@ export const createMealPlan = (
       .then((newMealPlan) => {
         res.status(201).json(newMealPlan);
       });
+    return;
   } catch (error) {
     next(error);
+    return;
   }
 };

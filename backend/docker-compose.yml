@@ -22,10 +22,19 @@ services:
     restart: always
     environment:
       DATABASE_URL: postgresql://chimiuser:chimi123@postgres:5432/chimidb
+      NODE_ENV: development
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
     depends_on:
       - postgres
+    command: >
+      sh -c "
+      npx prisma migrate deploy &&
+      nodemon --watch src --exec bun run src/index.ts
+      "
 
 volumes:
   postgres_data:
