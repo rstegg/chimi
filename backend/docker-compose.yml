@@ -26,8 +26,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./src:/app/src # Bind mount your source directory
+      - ./nodemon.json:/app/nodemon.json # Mount your nodemon config if needed
     depends_on:
       - postgres
     command: >

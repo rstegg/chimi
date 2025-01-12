@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
@@ -15,12 +15,15 @@ export const createMealPlan = (
       return;
     }
 
-    const { name, items } = req.body; // `items` can be a JSON array or similar, based on your schema
+    const { name, items, date, details } = req.body;
+
     prisma.mealPlan
       .create({
         data: {
           name,
           items,
+          date: new Date(date).toISOString(),
+          details,
           userId,
         },
       })

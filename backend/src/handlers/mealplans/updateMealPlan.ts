@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
@@ -16,21 +16,19 @@ export const updateMealPlan = async (
     }
 
     const { id } = req.params;
-    const { name, items } = req.body;
+    const { name, items, date, details } = req.body;
 
-    const updatedMealPlan = await prisma.mealPlan.updateMany({
-      where: { id, userId },
-      data: { name, items },
+    const updatedMealPlan = await prisma.mealPlan.update({
+      where: { id },
+      data: { name, items, date: new Date(date).toISOString(), details },
     });
 
-    if (!updatedMealPlan.count) {
-      res
-        .status(404)
-        .json({ msg: 'Meal plan not found or unauthorized' });
+    if (!updatedMealPlan) {
+      res.status(404).json({ msg: 'Meal plan not found or unauthorized' });
       return;
     }
 
-    res.json({ msg: 'Meal plan updated' });
+    res.json(updatedMealPlan);
     return;
   } catch (error) {
     next(error);
