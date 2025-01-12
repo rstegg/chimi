@@ -20,6 +20,8 @@ model User {
 model MealPlan {
   id        String   @id @default(cuid()) // Use CUID for unique string-based IDs
   name      String
+  date      DateTime
+  details   String?
   items     Json
   userId    String
   user      User     @relation(fields: [userId], references: [id])
