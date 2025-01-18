@@ -3,7 +3,17 @@ import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-export const createMealPlan = (
+enum MealType {
+  Breakfast = 'Breakfast',
+  Lunch = 'Lunch',
+  Dinner = 'Dinner',
+}
+
+function isValidMealType(mealType: string): boolean {
+  return Object.values(MealType).includes(mealType as MealType);
+}
+
+export const createMeal = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -15,20 +25,26 @@ export const createMealPlan = (
       return;
     }
 
-    const { name, items, date, details } = req.body;
+    const { name, items, date, details, mealType } = req.body;
 
-    prisma.mealPlan
+    if (!isValidMealType(mealType)) {
+      res.status(400).json({ msg: 'Invalid MealType' });
+      return;
+    }
+
+    prisma.meal
       .create({
         data: {
           name,
           items,
-          date: new Date(date).toISOString(),
+          date,
           details,
+          mealType,
           userId,
         },
       })
-      .then((newMealPlan) => {
-        res.status(201).json(newMealPlan);
+      .then((newMeal) => {
+        res.status(201).json(newMeal);
       });
     return;
   } catch (error) {

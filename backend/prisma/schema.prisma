@@ -7,21 +7,28 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id           String     @id @default(cuid()) // Use CUID for unique string-based IDs
-  username     String
-  email        String     @unique
-  passwordHash String
-  mealPlans    MealPlan[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+enum MealType {
+  Breakfast
+  Lunch
+  Dinner
 }
 
-model MealPlan {
+model User {
+  id           String   @id @default(cuid()) // Use CUID for unique string-based IDs
+  username     String
+  email        String   @unique
+  passwordHash String
+  meals        Meal[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Meal {
   id        String   @id @default(cuid()) // Use CUID for unique string-based IDs
   name      String
-  date      DateTime
+  date      String
   details   String?
+  mealType  MealType
   items     Json
   userId    String
   user      User     @relation(fields: [userId], references: [id])

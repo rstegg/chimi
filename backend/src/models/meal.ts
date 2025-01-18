@@ -1,4 +1,4 @@
-interface MealPlan {
+interface Meal {
   id: string; // Unique identifier for the MealPlan, auto-incremented.
   date: Date; // The date and time of the meal.
   mealType: string; // Type of meal (e.g., breakfast, lunch, dinner).

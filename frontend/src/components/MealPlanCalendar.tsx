@@ -1,6 +1,7 @@
+import { EventClickArg, EventDropArg } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import FullCalendar, { EventClickArg, EventDropArg } from "@fullcalendar/react";
+import FullCalendar from "@fullcalendar/react";
 import { Button, Form, Input, Modal, Radio } from "antd";
 import React, { useEffect, useState } from "react";
 import apiClient from "../config/axios"; // Axios instance
@@ -14,6 +15,17 @@ interface MealPlan {
   mealType?: string; // "Breakfast", "Lunch", or "Dinner"
 }
 
+enum MealType {
+  Breakfast = "Breakfast",
+  Lunch = "Lunch",
+  Dinner = "Dinner",
+}
+
+type MealTypeOption = {
+  value: MealType;
+  label: MealType;
+};
+
 const MealPlanCalendar: React.FC = () => {
   const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -21,7 +33,11 @@ const MealPlanCalendar: React.FC = () => {
   const [editingMealPlan, setEditingMealPlan] = useState<MealPlan | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const mealOptions = ["Breakfast", "Lunch", "Dinner"];
+  const mealOptions: MealTypeOption[] = [
+    { value: MealType.Breakfast, label: MealType.Breakfast },
+    { value: MealType.Lunch, label: MealType.Lunch },
+    { value: MealType.Dinner, label: MealType.Dinner },
+  ];
 
   const fetchMealPlans = async () => {
     try {
@@ -171,10 +187,7 @@ const MealPlanCalendar: React.FC = () => {
           >
             <Radio.Group
               block
-              options={mealOptions.map((option) => ({
-                label: option,
-                value: option,
-              }))}
+              options={mealOptions}
               optionType="button"
               buttonStyle="solid"
             />

@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-export const deleteMealPlan = async (
+export const deleteMeal = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -17,14 +17,12 @@ export const deleteMealPlan = async (
 
     const { id } = req.params;
 
-    const deletedMealPlan = await prisma.mealPlan.deleteMany({
+    const deletedMeal = await prisma.meal.deleteMany({
       where: { id, userId },
     });
 
-    if (!deletedMealPlan.count) {
-      res
-        .status(404)
-        .json({ msg: 'Meal plan not found or unauthorized' });
+    if (!deletedMeal.count) {
+      res.status(404).json({ msg: 'Meal plan not found or unauthorized' });
       return;
     }
 

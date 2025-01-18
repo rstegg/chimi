@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
 // Get all meal plans for the authenticated user
-export const getMealPlans = async (
+export const getMeals = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -16,11 +16,11 @@ export const getMealPlans = async (
       return;
     }
 
-    const mealPlans = await prisma.mealPlan.findMany({
+    const meals = await prisma.meal.findMany({
       where: { userId },
     });
 
-    res.json(mealPlans);
+    res.json(meals);
     return;
   } catch (error) {
     next(error);

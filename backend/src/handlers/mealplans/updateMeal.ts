@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-export const updateMealPlan = async (
+export const updateMeal = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -18,17 +18,17 @@ export const updateMealPlan = async (
     const { id } = req.params;
     const { name, items, date, details } = req.body;
 
-    const updatedMealPlan = await prisma.mealPlan.update({
+    const updatedMeal = await prisma.meal.update({
       where: { id },
-      data: { name, items, date: new Date(date).toISOString(), details },
+      data: { name, items, date, details },
     });
 
-    if (!updatedMealPlan) {
+    if (!updatedMeal) {
       res.status(404).json({ msg: 'Meal plan not found or unauthorized' });
       return;
     }
 
-    res.json(updatedMealPlan);
+    res.json(updatedMeal);
     return;
   } catch (error) {
     next(error);
